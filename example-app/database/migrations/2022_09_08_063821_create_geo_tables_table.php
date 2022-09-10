@@ -15,13 +15,13 @@ return new class extends Migration
     {
         Schema::create('geo_tables', function (Blueprint $table) {
           $table->integer('geoname_id')->primary();
-          $table->string('name',200);
+          $table->string('name',200)->index('forname');
           $table->string('ascii_name',200);
           $table->text('alternate_names',200);
-          $table->decimal('longitude',8,5);
-          $table->decimal('latitude',7,5);
+          $table->decimal('longitude',8,5)->index('long');
+          $table->decimal('latitude',7,5)->index('lat');
           $table->char('feature_class',1);
-          $table->string('featurecode',10);
+          $table->string('featurecode',10)->index('forcode');
           $table->char('country_code',2);
           $table->string('cc2',200);
           $table->string('admin1_code',20);

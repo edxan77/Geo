@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class geoTable extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'name',
         'longitude',
         'latitude',
-        'featurecode'
+        'featurecode',
     ];
 }

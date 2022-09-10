@@ -12,7 +12,7 @@ class loadAndMove extends Command
      *
      * @var string
      */
-    protected $signature = 'load:move';
+    protected $signature = 'cities:import';
 
     /**
      * The console command description.
@@ -28,24 +28,34 @@ class loadAndMove extends Command
      */
     public function handle()
     {
-        $this->output->progressStart(100);
-        $this->output->progressAdvance(15);
-        Load::downloadLogic();
-        $this->output->progressAdvance(15);
-        Load::unZip();
-        $this->output->progressAdvance(15);
-        Load::import();
-        $this->output->progressAdvance(45);
-    
-        if(Load::getErrors()){
-            $errors = Load::getErrors();
-            return $this->error("\n".$errors[0]);   
+
+        // Load::downloadLogic();
+
+        // Load::unZip();
+
+        $this->comment("\n" . "Trying import file to DB");
+        $progressBar = $this->output->createProgressBar(10);
+        $progressBar->setFormat('[%bar%]');
+        $progressBar->setEmptyBarCharacter('>');
+        $progressBar->start(100);
+
+        for ($i = 0; $i < 7; $i++) {
+            sleep(1);
+
+            $progressBar->advance(10);
         }
 
-        $this->output->progressAdvance(10);
-        $this->output->progressFinish();
-        
-        return $this->info("Data Successfully Imported To DB");
+        Load::import();
+
+        if (Load::getErrors()) {
+            $errors = Load::getErrors();
+            return $this->error("\n" . $errors[0]);
+        }
+
+        $progressBar->advance('30');
+        $progressBar->finish();
+
+        return $this->info("\n" . "Data Successfully Imported To DB");
 
     }
 }

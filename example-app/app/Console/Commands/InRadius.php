@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Console\Commands;
-use Illuminate\Support\Facades\Http;
+
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
 
@@ -38,22 +39,21 @@ class InRadius extends Command
         $this->output->progressAdvance(20);
         $cityName = $this->argument('cityName');
         $Km = $this->argument('Km');
-        $contents = Http::get("http://localhost/test?name=$cityName&dist=$Km")->body();
-        $req = Http::get("http://localhost/test?name=$cityName&dist=$Km");
+        $contents = Http::get("http://localhost/cities/search?name=$cityName&dist=$Km")->body();
+        $req = Http::get("http://localhost/cities/search?name=$cityName&dist=$Km");
         $decode = json_decode($contents);
         $table->setHeaders([
-            'CityName', 'Distance'
+            'CityName', 'Distance',
         ]);
         if ($req->successful()) {
-            
-                for($i=0;$i<count($decode->original);$i++)
-                {
-                    $table->addRows([
-                        $separator,
-                        [$decode->original[$i]->name,$decode->original[$i]->distance]
-                    ]);
-                     }
-            
+
+            for ($i = 0; $i < count($decode->original); $i++) {
+                $table->addRows([
+                    $separator,
+                    [$decode->original[$i]->name, $decode->original[$i]->distance],
+                ]);
+            }
+
         } else {
             return $this->error("\n" . $decode);
         }
