@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class RadiusService
 {
-     private array $error = [];
+    private array $error = [];
 
     public function CityOnRadius(Request $req, int $km = 10)
     {
@@ -20,6 +20,7 @@ class RadiusService
                 $lat = $serchModel->latitude;
                 $name = $serchModel->name;
                 $fCode = $serchModel->featurecode;
+                $coords = $serchModel->coords;
                 $distance = $km;
             } else if ($serchModel == null) {
                 array_push($this->error, "No City With This Name On this DB");
@@ -37,12 +38,7 @@ class RadiusService
 
         try {
             $cities = DB::table('geo_tables')
-                ->selectRaw('( 6371 * acos( cos( radians(?) ) *
-                               cos( radians( latitude ) )
-                               * cos( radians( longitude ) - radians(?)
-                               ) + sin( radians(?) ) *
-                               sin( radians( latitude ) ) )
-                             ) AS distance', [$lat, $long, $lat])
+                ->selectRaw('ST_Distance_SPhere(?, coords)/1000 AS distance', [$coords])
 
                 ->havingRaw("distance < ?", [$distance])
                 ->where('featurecode', 'LIKE', '%' . "ADM1H" . '%')
@@ -51,7 +47,7 @@ class RadiusService
                 ->limit(10)
                 ->get();
 
-        } catch (\Exception) {
+        } catch (\Exception$e) {
             array_push($this->error, "Connection Error");
         }
 

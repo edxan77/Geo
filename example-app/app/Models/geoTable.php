@@ -14,5 +14,6 @@ class geoTable extends Model
         'longitude',
         'latitude',
         'featurecode',
+        'coords'
     ];
 }

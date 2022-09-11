@@ -48,8 +48,19 @@ class LoadAndMoveService
             array_push($this->errors, "Connection Error");
         }
 
+        if (collect(DB::select("SHOW INDEXES FROM geo_tables"))->pluck('Key_name')->contains('location')) {
+
+            $pdo->exec("DROP INDEX location ON geo_tables");
+
+        }
+
         $pdo->exec('TRUNCATE table `geo_tables`');
+        $pdo->exec("ALTER TABLE `geo_tables` MODIFY `coords` POINT  NULL");
         $pdo->exec("LOAD DATA LOCAL INFILE '" . storage_path(config('DirPath.data_file')) . "' INTO TABLE geo_tables FIELDS TERMINATED BY '\t' ENCLOSED BY '\"' LINES TERMINATED BY '\\n'");
+        $pdo->exec("update geo_tables set coords=Point(geo_tables.longitude, geo_tables.latitude)");
+        $pdo->exec("ALTER TABLE `geo_tables` MODIFY `coords` POINT NOT NULL");
+        $pdo->exec("create spatial index location ON geo_tables(coords)");
+
     }
 
     public function getErrors(): array
