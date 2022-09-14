@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\geoController;
+use App\Http\Controllers\CityController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,4 +18,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/cities/search', [geoController::class, 'getRadius']);
+Route::get('/cities/search', [CityController::class, 'getCitiesOnRadius']);

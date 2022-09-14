@@ -1,33 +1,35 @@
 <?php
 namespace App\Service;
 
-use App\Models\geoTable;
+use App\Models\City;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class RadiusService
 {
-     private array $error = [];
+     
 
-    public function CityOnRadius(Request $req, int $km = 10)
+    public function cityOnRadius(Request $req, int $km = 10)
     {
 
         if ($req->name != "") {
-            $serchModel = geoTable::where('name', $req->name)->first();
+            $city = City::where('name', $req->name)->first();
 
-            if ($serchModel != null) {
-                $long = $serchModel->longitude;
-                $lat = $serchModel->latitude;
-                $name = $serchModel->name;
-                $fCode = $serchModel->featurecode;
+            if ($city != null) {
+                $long = $city->longitude;
+                $lat = $city->latitude;
+                $name = $city->name;
+                $fCode = $city->featurecode;
                 $distance = $km;
-            } else if ($serchModel == null) {
-                array_push($this->error, "No City With This Name On this DB");
+            } else if ($city == null) {
+               
+                return response("No City With This Name On this DB")->setStatusCode(404);
 
             }
 
         } else {
-            array_push($this->error, "Empty Querry Parameter");
+            
+            return response("Empty Parameter ?name")->setStatusCode(404);
 
         }
 
@@ -36,7 +38,7 @@ class RadiusService
         }
 
         try {
-            $cities = DB::table('geo_tables')
+            $cities = DB::table('cities')
                 ->selectRaw('( 6371 * acos( cos( radians(?) ) *
                                cos( radians( latitude ) )
                                * cos( radians( longitude ) - radians(?)
@@ -45,24 +47,22 @@ class RadiusService
                              ) AS distance', [$lat, $long, $lat])
 
                 ->havingRaw("distance < ?", [$distance])
-                ->where('featurecode', 'LIKE', '%' . "ADM1H" . '%')
+                ->where('code', 'LIKE', '%' . "ADM1H" . '%')
                 ->selectRaw('name ')
                 ->orderBy('distance', 'desc')
                 ->limit(10)
                 ->get();
 
         } catch (\Exception) {
-            array_push($this->error, "Connection Error");
+            
+            return response("Connection Error")->setStatusCode(404);
         }
 
-        if ($this->error == null) {
+        
             return response()->json($cities);
-        }
+        
 
     }
 
-    public function getError(): array
-    {
-        return $this->error;
-    }
+    
 }

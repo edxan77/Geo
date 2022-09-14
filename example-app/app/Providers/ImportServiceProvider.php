@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Service\loadAndMoveService;
+use App\Service\ImportService;
 
-class LoadServiceProvider extends ServiceProvider
+class ImportServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -26,6 +26,6 @@ class LoadServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->bind('Load',loadAndMoveService::class);
+        $this->app->bind('Load',ImportService::class);
     }
 }

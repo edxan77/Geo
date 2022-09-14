@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Load;
 
-class loadAndMove extends Command
+class ImportCity extends Command
 {
     /**
      * The name and signature of the console command.
@@ -19,7 +19,7 @@ class loadAndMove extends Command
      *
      * @var string
      */
-    protected $description = ' Downloading file and moving It into DB';
+    protected $description = ' Downloading file and moving it into DB';
 
     /**
      * Execute the console command.
