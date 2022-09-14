@@ -19,8 +19,8 @@ return new class extends Migration
             $table->decimal('longitude', 8, 5)->index('long');
             $table->decimal('latitude', 7, 5)->index('lat');
             $table->string('code', 10)->index('forcode');
-            $table->point('coords')->nullable();
-            $table->timestamps();
+            // $table->point('coords')->nullable();
+            // $table->timestamps();
         });
     }
 

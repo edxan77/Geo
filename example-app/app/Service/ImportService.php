@@ -75,8 +75,8 @@ class ImportService
     {
 
         $cities = $this->getCSV();
-        $chunks = array_chunk($cities, 5000);
-        // try {
+        $chunks = array_chunk($cities,5000);
+        
         DB::beginTransaction();
         try {
 
